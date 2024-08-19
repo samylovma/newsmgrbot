@@ -1,0 +1,13 @@
+[project]
+name = "newsmgrbot"
+version = "0.1.0"
+authors = [
+    {name = "Mikhail Samylov", email = "134856751+samylovma@users.noreply.github.com"},
+]
+dependencies = []
+requires-python = "==3.12.*"
+readme = "README.rst"
+
+
+[tool.pdm]
+distribution = false
