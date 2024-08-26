@@ -104,7 +104,7 @@ def _get_sources_keyboard(all_sources: Iterable[Source], user_sources: Iterable[
         [
             *[
                 InlineKeyboardButton(
-                    text=f"{"✅ " if source.id in user_sources else ""}{source.title}",
+                    text=f"{"☑️ " if source.id in user_sources else ""}{source.title}",
                     callback_data=f"source_{source.id}",
                 )
                 for source in all_sources
