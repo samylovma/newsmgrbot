@@ -6,6 +6,7 @@ import os
 
 import dishka
 import uvloop
+from advanced_alchemy.base import orm_registry
 from sqlalchemy.ext.asyncio import AsyncEngine, close_all_sessions
 from telegram import BotCommand, LinkPreviewOptions, Update
 from telegram.constants import ParseMode
@@ -32,7 +33,6 @@ from newsmgrbot.callbacks.sources import (
     sources_callback,
 )
 from newsmgrbot.callbacks.start import start_callback
-from newsmgrbot.models import Base
 from newsmgrbot.provider import Provider
 
 
@@ -79,7 +79,7 @@ async def main() -> None:
 
     engine = await container.get(AsyncEngine)
     async with engine.begin() as conn:
-        await conn.run_sync(Base.metadata.create_all)
+        await conn.run_sync(orm_registry.metadata.create_all)
 
     try:
         await application.initialize()

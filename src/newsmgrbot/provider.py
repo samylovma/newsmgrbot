@@ -4,10 +4,10 @@ import dishka
 import httpx
 import sqlalchemy.ext.asyncio as sa
 
-from newsmgrbot.services.feed_scraper import FeedScraper
-from newsmgrbot.services.news_repo import NewsRepository
-from newsmgrbot.services.source_repo import SourceRepository
-from newsmgrbot.services.user_repo import UserRepository
+from newsmgrbot.services.news import NewsService
+from newsmgrbot.services.scraper import FeedScraper
+from newsmgrbot.services.source import SourceService
+from newsmgrbot.services.user import UserService
 
 
 class Provider(dishka.Provider):
@@ -27,7 +27,7 @@ class Provider(dishka.Provider):
     async def provide_sa_session(
         self, sa_sessionmaker: sa.async_sessionmaker[sa.AsyncSession]
     ) -> AsyncIterable[sa.AsyncSession]:
-        async with sa_sessionmaker.begin() as session:
+        async with sa_sessionmaker() as session:
             yield session
 
     @dishka.provide(scope=dishka.Scope.APP)
@@ -35,7 +35,16 @@ class Provider(dishka.Provider):
         async with httpx.AsyncClient() as client:
             yield client
 
-    user_repo = dishka.provide(UserRepository, scope=dishka.Scope.REQUEST)
-    source_repo = dishka.provide(SourceRepository, scope=dishka.Scope.REQUEST)
-    news_repo = dishka.provide(NewsRepository, scope=dishka.Scope.REQUEST)
+    @dishka.provide(scope=dishka.Scope.REQUEST)
+    async def provide_user_service(self, sa_session: sa.AsyncSession) -> UserService:
+        return UserService(session=sa_session, auto_commit=True)
+
+    @dishka.provide(scope=dishka.Scope.REQUEST)
+    async def provide_source_service(self, sa_session: sa.AsyncSession) -> SourceService:
+        return SourceService(session=sa_session, auto_commit=True)
+
+    @dishka.provide(scope=dishka.Scope.REQUEST)
+    async def provide_news_service(self, sa_session: sa.AsyncSession) -> NewsService:
+        return NewsService(session=sa_session, auto_commit=True)
+
     feed_scraper = dishka.provide(FeedScraper, scope=dishka.Scope.REQUEST)
