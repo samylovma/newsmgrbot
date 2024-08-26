@@ -37,4 +37,6 @@ ignore = [
 ]
 
 [tool.mypy]
+python_version = "3.12"
+platform = "linux"
 strict = true
