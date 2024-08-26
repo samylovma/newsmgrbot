@@ -106,5 +106,6 @@ async def main() -> None:
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     logging.getLogger("httpx").setLevel(level=logging.WARNING)
+    logging.getLogger("apscheduler").setLevel(level=logging.WARNING)
     with contextlib.suppress(SystemExit, KeyboardInterrupt):
         uvloop.run(main())
