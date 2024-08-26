@@ -24,6 +24,7 @@ from telegram.ext import (
 from newsmgrbot.callbacks.auth import auth_callback
 from newsmgrbot.callbacks.help import help_callback
 from newsmgrbot.callbacks.parser import parser_callback
+from newsmgrbot.callbacks.privacy import privacy_callback
 from newsmgrbot.callbacks.sources import (
     check_source_callback,
     new_source_entry,
@@ -55,6 +56,7 @@ async def main() -> None:
             0: [
                 CommandHandler("start", start_callback),
                 CommandHandler("help", help_callback),
+                CommandHandler("privacy", privacy_callback),
                 CommandHandler("sources", sources_callback),
                 CallbackQueryHandler(check_source_callback, r"^source_"),
                 ConversationHandler(
@@ -85,6 +87,7 @@ async def main() -> None:
             commands=(
                 BotCommand(command="start", description="introduction message"),
                 BotCommand(command="help", description="help message"),
+                BotCommand(command="privacy", description="privacy policy"),
                 BotCommand(command="sources", description="manage your sources"),
             )
         )
