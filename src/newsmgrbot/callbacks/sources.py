@@ -7,7 +7,7 @@ from telegram.constants import ChatAction
 from telegram.ext import ContextTypes, ConversationHandler
 
 from newsmgrbot.di import inject
-from newsmgrbot.models import Source
+from newsmgrbot.models.source import Source
 from newsmgrbot.services.scraper import FeedFetchError, FeedScraper
 from newsmgrbot.services.source import SourceService
 from newsmgrbot.services.user import UserService
