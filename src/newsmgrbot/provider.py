@@ -30,7 +30,7 @@ class Provider(dishka.Provider):
         async with sa_sessionmaker.begin() as session:
             yield session
 
-    @dishka.provide(scope=dishka.Scope.REQUEST)
+    @dishka.provide(scope=dishka.Scope.APP)
     async def provide_httpx_client(self) -> AsyncIterable[httpx.AsyncClient]:
         async with httpx.AsyncClient() as client:
             yield client
