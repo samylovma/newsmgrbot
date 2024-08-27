@@ -4,8 +4,8 @@ from advanced_alchemy.base import BigIntAuditBase
 from sqlalchemy.orm import Mapped, relationship
 
 if TYPE_CHECKING:
-    from newsmgrbot.models.news import News
-    from newsmgrbot.models.user import User
+    from ._news import News
+    from ._user import User
 
 
 class Source(BigIntAuditBase):

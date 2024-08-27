@@ -11,7 +11,7 @@ from newsmgrbot.services.scraper import FeedScraper
 from newsmgrbot.services.source import SourceService
 
 if TYPE_CHECKING:
-    from newsmgrbot.models.news import News
+    from newsmgrbot.models import News
 
 
 @inject

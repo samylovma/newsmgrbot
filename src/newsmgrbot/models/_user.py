@@ -5,7 +5,7 @@ from sqlalchemy import BigInteger
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 if TYPE_CHECKING:
-    from newsmgrbot.models.source import Source
+    from ._source import Source
 
 
 class User(BigIntAuditBase):

@@ -6,8 +6,7 @@ import os
 
 import dishka
 import uvloop
-from advanced_alchemy.base import orm_registry
-from sqlalchemy.ext.asyncio import AsyncEngine, close_all_sessions
+from sqlalchemy.ext.asyncio import close_all_sessions
 from telegram import BotCommand, LinkPreviewOptions, Update
 from telegram.constants import ParseMode
 from telegram.ext import (
@@ -76,10 +75,6 @@ async def main() -> None:
     container = application.bot_data["container"] = dishka.make_async_container(
         Provider(db_url=os.environ["POSTGRES_URL"])
     )
-
-    engine = await container.get(AsyncEngine)
-    async with engine.begin() as conn:
-        await conn.run_sync(orm_registry.metadata.create_all)
 
     try:
         await application.initialize()

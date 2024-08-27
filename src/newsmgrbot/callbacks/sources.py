@@ -2,17 +2,24 @@ import logging
 from collections.abc import Iterable
 
 from dishka import FromDishka
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
+from telegram import ForceReply, InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.constants import ChatAction
 from telegram.ext import ContextTypes, ConversationHandler
 
 from newsmgrbot.di import inject
-from newsmgrbot.models.source import Source
+from newsmgrbot.models import Source
 from newsmgrbot.services.scraper import FeedFetchError, FeedScraper
 from newsmgrbot.services.source import SourceService
 from newsmgrbot.services.user import UserService
 
 _logger = logging.getLogger(__name__)
+
+
+_SOURCES_MENU_TEXT = """<b>Sources</b>
+
+☑️ means that source added to yours.
+
+To add source click on it."""
 
 
 @inject
@@ -25,7 +32,7 @@ async def sources_callback(
     all_sources = await source_service.list()
     user = await user_service.get_one(tg_id=update.message.from_user.id)
     await update.message.reply_text(
-        text="<b>Your sources</b>",
+        text=_SOURCES_MENU_TEXT,
         reply_markup=_get_sources_keyboard(all_sources=all_sources, user_sources=user.sources),
         reply_to_message_id=update.message.id,
     )
@@ -61,6 +68,7 @@ async def new_source_entry(update: Update, context: ContextTypes.DEFAULT_TYPE) -
     await context.bot.send_message(
         chat_id=update.effective_chat.id,
         text="Please send feed url.",
+        reply_markup=ForceReply(),
         reply_to_message_id=(
             update.callback_query.message.message_id if update.callback_query.message.is_accessible else None
         ),
@@ -77,6 +85,8 @@ async def new_source_feed_url(
     feed_scraper: FromDishka[FeedScraper],
 ) -> int:
     await context.bot.send_chat_action(chat_id=update.message.chat_id, action=ChatAction.TYPING)
+    user = await user_service.get_one(tg_id=update.effective_user.id)
+    all_sources = await source_service.list()
     try:
         feed = await feed_scraper.scrap(update.message.text)
     except FeedFetchError as exc:
@@ -85,18 +95,21 @@ async def new_source_feed_url(
             text="Sorry, I can't fetch feed from URL. Please try again later.",
             reply_to_message_id=update.message.id,
         )
+        await update.message.reply_text(
+            text=_SOURCES_MENU_TEXT,
+            reply_markup=_get_sources_keyboard(all_sources=all_sources, user_sources=user.sources),
+        )
         return ConversationHandler.END
     source = await source_service.create({"title": feed.title, "url": feed.url, "feed_url": update.message.text})
-    user = await user_service.get_one(tg_id=update.effective_user.id)
     user.sources.append(source)
     user = await user_service.upsert(user)
+    all_sources = await source_service.list()
     await update.message.reply_text(
         text="Successfully created!",
         reply_to_message_id=update.message.id,
     )
-    all_sources = await source_service.list()
     await update.message.reply_text(
-        text="<b>Your sources</b>",
+        text=_SOURCES_MENU_TEXT,
         reply_markup=_get_sources_keyboard(all_sources=all_sources, user_sources=user.sources),
     )
     return ConversationHandler.END
