@@ -27,6 +27,7 @@ dev-dependencies = [
     "mypy",
     "types-xmltodict",
 ]
+package = true
 
 [tool.ruff]
 line-length = 120
