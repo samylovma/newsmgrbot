@@ -63,25 +63,31 @@ def create_app(config: Config) -> _Application:
     )
     app.add_handlers(
         {
-            -1: [TypeHandler(Update, auth_callback)],
+            -1: [
+                TypeHandler(Update, auth_callback),  # type: ignore[arg-type]
+            ],
             0: [
                 CommandHandler("start", start_callback),  # type: ignore[arg-type]
                 CommandHandler("help", help_callback),  # type: ignore[arg-type]
                 CommandHandler("privacy", privacy_callback),  # type: ignore[arg-type]
-                CommandHandler("sources", sources_callback),
-                CallbackQueryHandler(check_source_callback, r"^source_"),
+                CommandHandler("sources", sources_callback),  # type: ignore[arg-type]
+                CallbackQueryHandler(check_source_callback, r"^source_"),  # type: ignore[arg-type]
                 ConversationHandler(
                     entry_points=[
                         CallbackQueryHandler(new_source_entry, r"^new_source$"),  # type: ignore[arg-type]
                     ],
-                    states={1: [MessageHandler(filters.TEXT, new_source_feed_url)]},
+                    states={
+                        1: [
+                            MessageHandler(filters.TEXT, new_source_feed_url),  # type: ignore[arg-type]
+                        ]
+                    },
                     fallbacks=[],
                 ),
             ],
         }
     )
     app.job_queue.run_repeating(  # type: ignore[union-attr]
-        callback=newsletter_callback,
+        callback=newsletter_callback,  # type: ignore[arg-type]
         interval=datetime.timedelta(minutes=1),
         name="newsletter",
     )
@@ -100,10 +106,11 @@ async def _post_init(application: _Application) -> None:
             BotCommand(command="sources", description="manage your sources"),
         )
     )
-    newsletter_job = application.job_queue.get_jobs_by_name("newsletter")[0]
-    await newsletter_job.run(application)
+    if job_queue := application.job_queue:
+        newsletter_job = job_queue.get_jobs_by_name("newsletter")[0]
+        await newsletter_job.run(application)
 
 
 async def _post_shutdown(application: _Application) -> None:
-    container: dishka.AsyncContainer = application.bot_data["container"]
-    await container.close()
+    if isinstance(container := application.bot_data["container"], dishka.AsyncContainer):
+        await container.close()
