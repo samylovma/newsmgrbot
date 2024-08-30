@@ -21,7 +21,7 @@ from telegram.ext import (
 
 from newsmgrbot.callbacks.auth import auth_callback
 from newsmgrbot.callbacks.help import help_callback
-from newsmgrbot.callbacks.parser import parser_callback
+from newsmgrbot.callbacks.newsletter import newsletter_callback
 from newsmgrbot.callbacks.privacy import privacy_callback
 from newsmgrbot.callbacks.sources import (
     check_source_callback,
@@ -81,7 +81,7 @@ def create_app(config: Config) -> _Application:
         }
     )
     app.job_queue.run_repeating(  # type: ignore[union-attr]
-        callback=parser_callback,
+        callback=newsletter_callback,
         interval=datetime.timedelta(minutes=1),
         name="newsletter",
     )

@@ -16,7 +16,7 @@ _logger = logging.getLogger(__name__)
 
 
 @inject
-async def parser_callback(
+async def newsletter_callback(
     context: ContextTypes.DEFAULT_TYPE,
     source_service: FromDishka[SourceService],
     news_service: FromDishka[NewsService],
