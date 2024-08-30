@@ -24,6 +24,11 @@ class Provider(dishka.Provider):
     async def provide_sa_sessionmaker(self, sa_engine: sa.AsyncEngine) -> sa.async_sessionmaker[sa.AsyncSession]:
         return sa.async_sessionmaker(bind=sa_engine, expire_on_commit=False)
 
+    @dishka.provide(scope=dishka.Scope.APP)
+    async def provide_feed_scraper(self) -> AsyncIterable[FeedScraper]:
+        async with httpx.AsyncClient(proxy=self.__scraper_proxy) as client:
+            yield FeedScraper(client=client)
+
     @dishka.provide(scope=dishka.Scope.REQUEST)
     async def provide_sa_session(
         self, sa_sessionmaker: sa.async_sessionmaker[sa.AsyncSession]
@@ -42,8 +47,3 @@ class Provider(dishka.Provider):
     @dishka.provide(scope=dishka.Scope.REQUEST)
     async def provide_news_service(self, sa_session: sa.AsyncSession) -> NewsService:
         return NewsService(session=sa_session, auto_commit=True)
-
-    @dishka.provide(scope=dishka.Scope.APP)
-    async def provide_feed_scraper(self) -> AsyncIterable[FeedScraper]:
-        async with httpx.AsyncClient(proxy=self.__scraper_proxy) as client:
-            yield FeedScraper(client=client)
