@@ -16,7 +16,7 @@ if config.config_file_name is not None:
 
 target_metadata = models.registry.metadata
 
-if db_url := os.getenv("POSTGRES_URL"):
+if db_url := os.getenv("DATABASE_URL"):
     config.set_main_option("sqlalchemy.url", db_url)
 
 

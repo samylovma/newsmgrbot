@@ -2,7 +2,6 @@ import asyncio
 import contextlib
 import datetime
 import logging
-import os
 
 import dishka
 import uvloop
@@ -32,13 +31,14 @@ from newsmgrbot.callbacks.sources import (
     sources_callback,
 )
 from newsmgrbot.callbacks.start import start_callback
+from newsmgrbot.config import Config, parse_config
 from newsmgrbot.provider import Provider
 
 
-async def main() -> None:
+async def main(config: Config) -> None:
     application = (
         Application.builder()
-        .token(os.environ["TELEGRAM_BOT_TOKEN"])
+        .token(config.TELEGRAM_BOT_TOKEN)
         .defaults(
             Defaults(
                 parse_mode=ParseMode.HTML,
@@ -72,9 +72,7 @@ async def main() -> None:
         interval=datetime.timedelta(minutes=1),
     )
 
-    container = application.bot_data["container"] = dishka.make_async_container(
-        Provider(db_url=os.environ["POSTGRES_URL"])
-    )
+    container = application.bot_data["container"] = dishka.make_async_container(Provider(db_url=config.DATABASE_URL))
 
     try:
         await application.initialize()
@@ -102,5 +100,6 @@ if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
     logging.getLogger("httpx").setLevel(level=logging.WARNING)
     logging.getLogger("apscheduler").setLevel(level=logging.WARNING)
+    config = parse_config()
     with contextlib.suppress(SystemExit, KeyboardInterrupt):
-        uvloop.run(main())
+        uvloop.run(main(config))
