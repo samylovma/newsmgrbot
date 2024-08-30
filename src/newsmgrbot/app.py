@@ -83,6 +83,7 @@ def create_app(config: Config) -> _Application:
     app.job_queue.run_repeating(  # type: ignore[union-attr]
         callback=parser_callback,
         interval=datetime.timedelta(minutes=1),
+        name="newsletter",
     )
     app.bot_data["container"] = dishka.make_async_container(Provider(db_url=config.DATABASE_URL))
     return app
@@ -97,6 +98,8 @@ async def _post_init(application: _Application) -> None:
             BotCommand(command="sources", description="manage your sources"),
         )
     )
+    newsletter_job = application.job_queue.get_jobs_by_name("newsletter")[0]
+    await newsletter_job.run(application)
 
 
 async def _post_shutdown(application: _Application) -> None:
