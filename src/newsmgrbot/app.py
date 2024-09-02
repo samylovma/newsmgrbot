@@ -91,9 +91,7 @@ def create_app(config: Config) -> _Application:
         interval=datetime.timedelta(minutes=1),
         name="newsletter",
     )
-    app.bot_data["container"] = dishka.make_async_container(
-        Provider(db_url=config.DATABASE_URL, scraper_proxy=config.SCRAPER_PROXY)
-    )
+    app.bot_data["container"] = dishka.make_async_container(Provider(config=config))
     return app
 
 
