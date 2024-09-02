@@ -14,7 +14,7 @@ dependencies = [
     "alembic~=1.13",
     "asyncpg~=0.29",
     # other
-    "httpx[socks]~=0.27",
+    "httpx[brotli,socks,zstd]~=0.27",
     "xmltodict~=0.13",
     "click~=8.1",
     "python-dotenv~=1.0",
