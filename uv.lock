@@ -258,6 +258,7 @@ dependencies = [
     { name = "click" },
     { name = "dishka" },
     { name = "httpx", extra = ["socks"] },
+    { name = "python-dotenv" },
     { name = "python-telegram-bot", extra = ["job-queue", "rate-limiter", "webhooks"] },
     { name = "sqlalchemy", extra = ["asyncio"] },
     { name = "xmltodict" },
@@ -278,6 +279,7 @@ requires-dist = [
     { name = "click", specifier = "~=8.1" },
     { name = "dishka", specifier = "~=1.3" },
     { name = "httpx", extras = ["socks"], specifier = "~=0.27" },
+    { name = "python-dotenv", specifier = "~=1.0" },
     { name = "python-telegram-bot", extras = ["job-queue", "rate-limiter", "webhooks"], specifier = "~=21.4" },
     { name = "sqlalchemy", extras = ["asyncio"], specifier = "~=2.0" },
     { name = "xmltodict", specifier = "~=0.13" },
@@ -291,15 +293,24 @@ dev = [
 ]
 
 [[package]]
+name = "python-dotenv"
+version = "1.0.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/bc/57/e84d88dfe0aec03b7a2d4327012c1627ab5f03652216c63d49846d7a6c58/python-dotenv-1.0.1.tar.gz", hash = "sha256:e324ee90a023d808f1959c46bcbc04446a10ced277783dc6ee09987c37ec10ca", size = 39115 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/6a/3e/b68c118422ec867fa7ab88444e1274aa40681c606d59ac27de5a5588f082/python_dotenv-1.0.1-py3-none-any.whl", hash = "sha256:f7b63ef50f1b690dddf550d03497b66d609393b40b564ed0d674909a68ebf16a", size = 19863 },
+]
+
+[[package]]
 name = "python-telegram-bot"
-version = "21.4"
+version = "21.5"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "httpx" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/02/51/8b16fde0420adac53cc628c5363e9c1eb316a8ee23bd698ea7ae5148d07c/python_telegram_bot-21.4.tar.gz", hash = "sha256:d4d41f29f2e2c02920a4be75d9c1ecf85ec381bf47bbeb51af5b097e340b8377", size = 423626 }
+sdist = { url = "https://files.pythonhosted.org/packages/95/7e/b23ca1d8a712085a56132c274fbfe04d5b847a029af1966114c8b7117415/python_telegram_bot-21.5.tar.gz", hash = "sha256:2d679173072cce8d6b49aac2e438d49dbfc01c1a4ef5658828c2a65951ee830b", size = 427686 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d8/f0/b1c3f306d6846fb10d7bf737e2de010f33e43e682686e682b7cda93231a7/python_telegram_bot-21.4-py3-none-any.whl", hash = "sha256:71ce864130af43b48be70ff0593ef4db31d99d92aa64a2933289b8d544e6e9df", size = 644814 },
+    { url = "https://files.pythonhosted.org/packages/4b/d8/f4e6bf4c51fa5aec4cce8189358c536c27425b038fd230ddbbfdba740ee2/python_telegram_bot-21.5-py3-none-any.whl", hash = "sha256:1bbba653477ba164411622b717a0cfe1eb7843da016348e41df97f96c93f578e", size = 648778 },
 ]
 
 [package.optional-dependencies]
