@@ -20,17 +20,10 @@ from telegram.ext import (
 )
 
 from newsmgrbot.callbacks.auth import auth_callback
-from newsmgrbot.callbacks.help import help_callback
 from newsmgrbot.callbacks.newsletter import newsletter_callback
-from newsmgrbot.callbacks.privacy import privacy_callback
-from newsmgrbot.callbacks.sources import (
-    check_source_callback,
-    new_source_entry,
-    new_source_feed_url,
-    sources_callback,
-)
-from newsmgrbot.callbacks.start import start_callback
+from newsmgrbot.callbacks.sources import check_source_callback, new_source_entry, new_source_feed_url, sources_callback
 from newsmgrbot.config import Config
+from newsmgrbot.handlers import HelpHandler, PrivacyHandler, StartHandler
 from newsmgrbot.provider import Provider
 
 type _Application = Application[
@@ -61,15 +54,15 @@ def create_app(config: Config) -> _Application:
             .build()
         ),
     )
+    app.add_handler(StartHandler())
+    app.add_handler(HelpHandler())
+    app.add_handler(PrivacyHandler())
     app.add_handlers(
         {
             -1: [
                 TypeHandler(Update, auth_callback),  # type: ignore[arg-type]
             ],
             0: [
-                CommandHandler("start", start_callback),  # type: ignore[arg-type]
-                CommandHandler("help", help_callback),  # type: ignore[arg-type]
-                CommandHandler("privacy", privacy_callback),  # type: ignore[arg-type]
                 CommandHandler("sources", sources_callback),  # type: ignore[arg-type]
                 CallbackQueryHandler(check_source_callback, r"^source_"),  # type: ignore[arg-type]
                 ConversationHandler(
