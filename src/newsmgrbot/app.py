@@ -7,9 +7,9 @@ from telegram.constants import ParseMode
 from telegram.ext import (
     AIORateLimiter,
     Application,
-    CallbackContext,
     CallbackQueryHandler,
     CommandHandler,
+    ContextTypes,
     ConversationHandler,
     Defaults,
     ExtBot,
@@ -23,16 +23,17 @@ from newsmgrbot.callbacks.auth import auth_callback
 from newsmgrbot.callbacks.newsletter import newsletter_callback
 from newsmgrbot.callbacks.sources import check_source_callback, new_source_entry, new_source_feed_url, sources_callback
 from newsmgrbot.config import Config
+from newsmgrbot.context import BotData, Context
 from newsmgrbot.handlers import HelpHandler, PrivacyHandler, StartHandler
 from newsmgrbot.provider import Provider
 
 type _Application = Application[
     ExtBot[AIORateLimiter],
-    CallbackContext[ExtBot[AIORateLimiter], dict[Any, Any], dict[Any, Any], dict[Any, Any]],
+    Context,
     dict[Any, Any],
     dict[Any, Any],
-    dict[Any, Any],
-    JobQueue[CallbackContext[ExtBot[AIORateLimiter], dict[Any, Any], dict[Any, Any], dict[Any, Any]]],
+    BotData,
+    JobQueue[Context],
 ]
 
 
@@ -51,6 +52,7 @@ def create_app(config: Config) -> _Application:
             .post_init(_post_init)
             .post_shutdown(_post_shutdown)
             .rate_limiter(AIORateLimiter())
+            .context_types(ContextTypes(context=Context, bot_data=BotData))
             .build()
         ),
     )
@@ -84,7 +86,7 @@ def create_app(config: Config) -> _Application:
         interval=datetime.timedelta(minutes=1),
         name="newsletter",
     )
-    app.bot_data["container"] = dishka.make_async_container(Provider(config=config))
+    app.bot_data.dishka_container = dishka.make_async_container(Provider(config=config))
     return app
 
 
@@ -103,5 +105,5 @@ async def _post_init(application: _Application) -> None:
 
 
 async def _post_shutdown(application: _Application) -> None:
-    if isinstance(container := application.bot_data["container"], dishka.AsyncContainer):
-        await container.close()
+    if dishka_container := application.bot_data.dishka_container:
+        await dishka_container.close()
