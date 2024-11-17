@@ -1,14 +1,14 @@
-from telegram import LinkPreviewOptions, Message
+from telegram import Message
 from telegram.ext import CommandHandler
 
 from newsmgrbot.context import Context
 from newsmgrbot.utils import message
 
 
-class PrivacyHandler(CommandHandler[Context]):
+class StartHandler(CommandHandler[Context, None]):
     def __init__(self) -> None:
         super().__init__(
-            command="privacy",
+            command="start",
             callback=_callback,
             filters=None,
             block=False,
@@ -19,7 +19,6 @@ class PrivacyHandler(CommandHandler[Context]):
 @message
 async def _callback(message: Message, _: Context) -> None:
     await message.reply_text(
-        text="https://telegram.org/privacy-tpa",
-        link_preview_options=LinkPreviewOptions(is_disabled=False, prefer_large_media=True),
+        "Hi! I'm @newsmgrbot. To get started choose your /sources.",
         reply_to_message_id=message.id,
     )

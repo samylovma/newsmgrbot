@@ -1,14 +1,14 @@
-from telegram import Message
+from telegram import LinkPreviewOptions, Message
 from telegram.ext import CommandHandler
 
 from newsmgrbot.context import Context
 from newsmgrbot.utils import message
 
 
-class HelpHandler(CommandHandler[Context]):
+class PrivacyHandler(CommandHandler[Context, None]):
     def __init__(self) -> None:
         super().__init__(
-            command="help",
+            command="privacy",
             callback=_callback,
             filters=None,
             block=False,
@@ -19,12 +19,9 @@ class HelpHandler(CommandHandler[Context]):
 @message
 async def _callback(message: Message, _: Context) -> None:
     await message.reply_text(
-        """<b>My commands</b>
-
-/start — introduction message.
-/help — help message.
-/privacy — privacy policy.
-
-/sources — manage news sources.""",
+        text="https://telegram.org/privacy-tpa",
+        link_preview_options=LinkPreviewOptions(
+            is_disabled=False, prefer_large_media=True
+        ),
         reply_to_message_id=message.id,
     )

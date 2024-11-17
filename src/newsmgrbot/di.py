@@ -8,10 +8,14 @@ from dishka.integrations.base import wrap_injection
 from newsmgrbot.context import Context
 
 
-def inject[**P, R](func: Callable[P, Awaitable[R]]) -> Callable[P, Awaitable[R]]:
+def inject[**P, R](
+    func: Callable[P, Awaitable[R]],
+) -> Callable[P, Awaitable[R]]:
     injected_func = wrap_injection(
         func=func,
-        container_getter=lambda args, kwargs: _find_context(*args, **kwargs).dishka_container,
+        container_getter=lambda args, kwargs: _find_context(
+            *args, **kwargs
+        ).dishka_container,
         is_async=True,
     )
 
