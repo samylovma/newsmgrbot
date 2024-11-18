@@ -14,9 +14,9 @@ from telegram.ext import (
 
 from newsmgrbot.config import Config
 from newsmgrbot.context import BotData, Context
-from newsmgrbot.controllers.help import HelpHandler
-from newsmgrbot.controllers.privacy import PrivacyHandler
-from newsmgrbot.controllers.start import StartHandler
+from newsmgrbot.controllers.telegram_bot.help import HelpHandler
+from newsmgrbot.controllers.telegram_bot.privacy import PrivacyHandler
+from newsmgrbot.controllers.telegram_bot.start import StartHandler
 from newsmgrbot.ioc import MainProvider
 
 type _Application = Application[
