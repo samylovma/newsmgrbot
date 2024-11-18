@@ -11,6 +11,7 @@ class News:
     source_id: SourceId
     internal_id: str
     title: str
-    description: str | None
     url: str
-    pub_date: datetime
+    description: str | None
+    publication_date: datetime
+    created_at: datetime
