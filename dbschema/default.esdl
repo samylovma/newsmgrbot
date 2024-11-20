@@ -1,16 +1,5 @@
 module default {
-    abstract type Auditable {
-        required created_at: datetime {
-            readonly := true;
-            rewrite insert using (datetime_of_statement());
-        };
-        required updated_at: datetime {
-            readonly := true;
-            rewrite insert, update using (datetime_of_statement());
-        };
-    }
-
-    type Source extending Auditable {
+    type Source {
         required title: str;
         required url: str;
         required feed_url: str {
@@ -18,19 +7,16 @@ module default {
         };
         required health: bool;
     }
-
-    type News extending Auditable {
+    type News {
         required source: Source;
         required internal_id: str;
         required title: str;
         required url: str;
         description: str;
         publication_date: datetime;
-
         constraint exclusive on ((.source, .internal_id));
     }
-
-    type User extending Auditable {
+    type User {
         required telegram_id: int64 {
             constraint exclusive;
         };

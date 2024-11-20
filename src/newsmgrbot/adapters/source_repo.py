@@ -1,4 +1,5 @@
 from collections.abc import Sequence
+from dataclasses import dataclass
 from typing import cast
 
 import edgedb
@@ -12,6 +13,7 @@ class SourceNotFoundError(Exception):
     pass
 
 
+@dataclass
 class CreateSource:
     title: str
     url: str
@@ -28,10 +30,10 @@ class SourceRepository:
             """
             select(
                 insert Source {
-                    title := <str>$title;
-                    url := <str>$url;
-                    feed_url := <str>$feed_url;
-                    health := <bool>$health;
+                    title := <str>$title,
+                    url := <str>$url,
+                    feed_url := <str>$feed_url,
+                    health := <bool>$health
                 }
             ) { * }
             """,

@@ -14,5 +14,3 @@ class News:
     url: str
     description: str | None
     publication_date: datetime
-    created_at: datetime
-    updated_at: datetime

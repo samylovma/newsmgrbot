@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from datetime import datetime
 
 from newsmgrbot.models.source_id import SourceId
 
@@ -11,5 +10,3 @@ class Source:
     url: str
     feed_url: str
     health: bool
-    created_at: datetime
-    updated_at: datetime

@@ -73,7 +73,10 @@ class UserRepository:
             update User
             filter .id = <uuid>$user_id
             set {
-                subscriptions += <uuid>$source_id
+                subscriptions += (
+                    select Source
+                    filter .id = <uuid>$source_id
+                )
             }
             """,
             user_id=user_id,
@@ -88,7 +91,11 @@ class UserRepository:
             update User
             filter .id = <uuid>$user_id
             set {
-                subscriptions -= <uuid>$source_id
+                subscriptions -= (
+                    select Source
+                    filter .id = <uuid>$source_id
+                )
+
             }
             """,
             user_id=user_id,
