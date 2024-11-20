@@ -1,7 +1,6 @@
 import functools
+import itertools
 from collections.abc import Awaitable, Callable
-
-from telegram import Update
 
 from newsmgrbot.adapters.user_repo import (
     CreateUser,
@@ -11,20 +10,25 @@ from newsmgrbot.adapters.user_repo import (
 from newsmgrbot.context import Context
 
 
-def auth[R](
-    func: Callable[[Update, Context], Awaitable[R]],
-) -> Callable[[Update, Context], Awaitable[R]]:
+def auth[**P, R](
+    func: Callable[P, Awaitable[R]],
+) -> Callable[P, Awaitable[R]]:
     @functools.wraps(func)
-    async def wrapper(update: Update, context: Context) -> R:
-        tg_user = update.effective_user
-        if tg_user is None:
-            raise RuntimeError("No user in update")
+    async def wrapper(*args: P.args, **kwargs: P.kwargs) -> R:
+        context: Context | None = None
+        for arg in itertools.chain(args, kwargs.values()):
+            if isinstance(arg, Context):
+                context = arg
+                break
+        tg_user_id = context._user_id  # noqa: SLF001
+        if tg_user_id is None:
+            raise RuntimeError("No user_id in context")
         user_repo = await context.dishka_container.get(UserRepository)
         try:
-            user = await user_repo.get_by_telegram_id(tg_user.id)
+            user = await user_repo.get_by_telegram_id(tg_user_id)
         except UserNotFoundError:
-            user = await user_repo.create(CreateUser(telegram_id=tg_user.id))
+            user = await user_repo.create(CreateUser(telegram_id=tg_user_id))
         context.user = user
-        return await func(update, context)
+        return await func(*args, **kwargs)
 
     return wrapper
