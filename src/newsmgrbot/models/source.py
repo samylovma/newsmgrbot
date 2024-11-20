@@ -12,3 +12,4 @@ class Source:
     feed_url: str
     health: bool
     created_at: datetime
+    updated_at: datetime

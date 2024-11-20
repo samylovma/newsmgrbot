@@ -4,6 +4,8 @@ from typing import Any
 from dishka import AsyncContainer
 from telegram.ext import AIORateLimiter, Application, CallbackContext, ExtBot
 
+from newsmgrbot.models.user import User
+
 
 @dataclass
 class BotData:
@@ -20,6 +22,7 @@ class Context(
     ]
 ):
     dishka_container: AsyncContainer = field(init=False)
+    user: User = field(init=False)
 
     def __init__(
         self,
