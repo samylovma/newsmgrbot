@@ -2,7 +2,11 @@ from collections.abc import AsyncGenerator
 
 import dishka
 import edgedb
+import httpx
 
+from newsmgrbot.adapters.feed_scraper import FeedScraper
+from newsmgrbot.adapters.news_repo import NewsRepository
+from newsmgrbot.adapters.source_repo import SourceRepository
 from newsmgrbot.adapters.user_repo import UserRepository
 from newsmgrbot.config import Config
 
@@ -20,4 +24,14 @@ class MainProvider(dishka.Provider):
         yield client
         await client.aclose()
 
+    @dishka.provide(scope=dishka.Scope.APP)
+    async def get_httpx_client(
+        self,
+    ) -> AsyncGenerator[httpx.AsyncClient, None]:
+        async with httpx.AsyncClient() as client:
+            yield client
+
+    scraper = dishka.provide(FeedScraper, scope=dishka.Scope.REQUEST)
     user_repo = dishka.provide(UserRepository, scope=dishka.Scope.REQUEST)
+    source_repo = dishka.provide(SourceRepository, scope=dishka.Scope.REQUEST)
+    news_repo = dishka.provide(NewsRepository, scope=dishka.Scope.REQUEST)

@@ -15,6 +15,9 @@ from telegram.ext import (
 from newsmgrbot.config import Config
 from newsmgrbot.context import BotData, Context
 from newsmgrbot.controllers.telegram_bot.help import HelpHandler
+from newsmgrbot.controllers.telegram_bot.newsource import (
+    NewSourceCommandHandler,
+)
 from newsmgrbot.controllers.telegram_bot.start import StartHandler
 from newsmgrbot.ioc import MainProvider
 
@@ -47,7 +50,9 @@ def create_app(config: Config) -> _Application:
             .build()
         ),
     )
-    app.add_handlers((StartHandler(), HelpHandler()))
+    app.add_handlers(
+        (StartHandler(), HelpHandler(), NewSourceCommandHandler())
+    )
     app.bot_data.dishka_container = make_async_container(
         MainProvider(config=config)
     )
