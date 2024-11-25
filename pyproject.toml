@@ -21,6 +21,7 @@ newsmgrbot = "newsmgrbot.cli:cli"
 dev = [
     "mypy>=1.13.0",
     "ruff>=0.7.4",
+    "types-xmltodict>=0.14.0.20241009",
 ]
 
 [tool.uv]
