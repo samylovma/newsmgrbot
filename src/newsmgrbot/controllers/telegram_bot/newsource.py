@@ -8,7 +8,7 @@ from telegram.ext import (
 )
 
 from newsmgrbot.adapters.feed_scraper import FeedScraper
-from newsmgrbot.adapters.source_repo import CreateSource, SourceRepository
+from newsmgrbot.adapters.source_repo import SourceRepository
 from newsmgrbot.adapters.user_repo import UserRepository
 from newsmgrbot.auth import auth
 from newsmgrbot.context import Context
@@ -48,12 +48,10 @@ async def callback(
     feed_url = message.text
     feed = await scraper.scrap(feed_url)
     source = await source_repo.create(
-        CreateSource(
-            title=feed.title,
-            url=feed.url,
-            feed_url=feed_url,
-            health=True,
-        )
+        title=feed.title,
+        url=feed.url,
+        feed_url=feed_url,
+        health=True,
     )
     await user_repo.add_subscription(context.user.id, source.id)
     await message.reply_text(

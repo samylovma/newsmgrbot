@@ -31,6 +31,10 @@ class MainProvider(dishka.Provider):
         async with httpx.AsyncClient() as client:
             yield client
 
+    edgedb_executor = dishka.alias(
+        edgedb.AsyncIOClient, provides=edgedb.AsyncIOExecutor
+    )
+
     scraper = dishka.provide(FeedScraper, scope=dishka.Scope.REQUEST)
     user_repo = dishka.provide(UserRepository, scope=dishka.Scope.REQUEST)
     source_repo = dishka.provide(SourceRepository, scope=dishka.Scope.REQUEST)

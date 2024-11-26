@@ -2,11 +2,7 @@ import functools
 import itertools
 from collections.abc import Awaitable, Callable
 
-from newsmgrbot.adapters.user_repo import (
-    CreateUser,
-    UserNotFoundError,
-    UserRepository,
-)
+from newsmgrbot.adapters.user_repo import UserNotFoundError, UserRepository
 from newsmgrbot.context import Context
 
 
@@ -27,7 +23,7 @@ def auth[**P, R](
         try:
             user = await user_repo.get_by_telegram_id(tg_user_id)
         except UserNotFoundError:
-            user = await user_repo.create(CreateUser(telegram_id=tg_user_id))
+            user = await user_repo.create(telegram_id=tg_user_id)
         context.user = user
         return await func(*args, **kwargs)
 
