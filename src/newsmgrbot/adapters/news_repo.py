@@ -8,6 +8,10 @@ from newsmgrbot.models.news_id import NewsId
 from newsmgrbot.models.source_id import SourceId
 
 
+class NewsNotFoundError(Exception):
+    pass
+
+
 class NewsRepository:
     def __init__(self, client: edgedb.AsyncIOExecutor) -> None:
         self.__client = client
@@ -47,10 +51,13 @@ class NewsRepository:
         )
 
     async def get_by_id(self, news_id: NewsId) -> News:
-        return cast(
-            News,
-            await self.__client.query_required_single_json(
-                "select News { * } filter .id = <uuid>$news_id",
-                news_id=news_id,
-            ),
-        )
+        try:
+            return cast(
+                News,
+                await self.__client.query_required_single_json(
+                    "select News { * } filter .id = <uuid>$news_id",
+                    news_id=news_id,
+                ),
+            )
+        except edgedb.NoDataError as exc:
+            raise NewsNotFoundError from exc
