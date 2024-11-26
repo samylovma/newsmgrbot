@@ -11,7 +11,7 @@ class SourceNotFoundError(Exception):
 
 
 class SourceRepository:
-    def __init__(self, client: edgedb.AsyncIOClient) -> None:
+    def __init__(self, client: edgedb.AsyncIOExecutor) -> None:
         self.__client = client
 
     async def create(

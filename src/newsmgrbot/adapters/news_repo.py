@@ -9,7 +9,7 @@ from newsmgrbot.models.source_id import SourceId
 
 
 class NewsRepository:
-    def __init__(self, client: edgedb.AsyncIOClient) -> None:
+    def __init__(self, client: edgedb.AsyncIOExecutor) -> None:
         self.__client = client
 
     async def create(  # noqa: PLR0913
