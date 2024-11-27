@@ -8,7 +8,6 @@ dependencies = [
     "click>=8.1.7",
     "dishka>=1.4.1",
     "edgedb>=2.2.0",
-    "python-dotenv>=1.0.1",
     "python-telegram-bot[rate-limiter,webhooks]>=21.7",
     "xmltodict>=0.14.2",
 ]
