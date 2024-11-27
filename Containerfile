@@ -13,7 +13,7 @@ ENV PYTHONOPTIMIZE=2 \
     UV_PYTHON=/usr/local/bin/python
 COPY pyproject.toml uv.lock .
 RUN /opt/uv/bin/uv sync --no-dev --no-install-project
-COPY src/ src/
+COPY src src
 COPY README.rst .
 RUN /opt/uv/bin/uv sync --no-dev --no-editable
 
