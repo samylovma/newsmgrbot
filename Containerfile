@@ -1,17 +1,31 @@
-FROM docker.io/python:3.12.5-alpine3.20
+FROM docker.io/python:3.12.7-alpine3.20 as builder
 
-ENV PYTHONOPTIMIZE=2
-ENV UV_REQUIRE_HASHES=true
-ENV UV_LINK_MODE=copy
-ENV UV_COMPILE_BYTECODE=1
+RUN apk --no-cache add gcc musl-dev
 
-WORKDIR /app
-COPY . .
-RUN --mount=from=ghcr.io/astral-sh/uv:0.4.4,source=/uv,target=/bin/uv \
-    --mount=type=cache,target=/root/.cache/uv \
-    uv sync --no-dev --frozen
+COPY --from=ghcr.io/astral-sh/uv:0.5.4 /uv /uvx /opt/uv/bin
 
-ENV PATH="/app/.venv/bin:$PATH"
+WORKDIR /tmp/newsmgrbot
+ENV PYTHONOPTIMIZE=2 \
+    UV_COMPILE_BYTECODE=1 \
+    UV_PROJECT_ENVIRONMENT=/opt/newsmgrbot
+COPY pyproject.toml uv.lock .
+RUN /opt/uv/bin/uv sync --no-dev --no-install-project --frozen
+COPY src/ src/
+COPY README.rst .
+RUN /opt/uv/bin/uv sync --no-dev --no-editable --frozen
 
-ENTRYPOINT ["newsmgrbot"]
-CMD ["run-polling"]
+
+FROM docker.io/python:3.12.7-alpine3.20
+
+COPY --from=builder /opt/newsmgrbot /opt/newsmgrbot
+
+RUN addgroup -S newsmgrbot \
+    && adduser -G newsmgrbot -S -D -H newsmgrbot
+USER newsmgrbot
+
+ENV PYTHONOPTIMIZE=2 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PATH="/opt/newsmgrbot/bin:$PATH"
+
+CMD ["newsmgrbot", "run-polling"]
